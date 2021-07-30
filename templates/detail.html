@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block page_title %}
+Detail
+{% endblock page_title %}
+
+{% block content %}
+<h1>상세페이지</h1>
+<h3>{{post.title}}</h3>
+<p>{{post.date}}</p>
+<h5>{{post.body}}</h5>
+
+<form method="POST" action="{% url 'snsapp:new_comment' post.pk %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{comment_form}}
+    <input type="submit" value="댓글 작성">
+</form>
+{% for comment in post.comment_set.all %}
+<p>{{comment}}</p>
+<h6>{{comment.date}}</h6>
+<hr>
+{% endfor %}
+{% endblock %}
