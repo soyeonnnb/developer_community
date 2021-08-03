@@ -6,7 +6,10 @@
 {% block content %}
 
 <!-- Page Heading -->
-<h1 class="h3 mb-2 text-gray-800">자유게시판</h1>
+
+<div class="card-body">
+    <h3>자유게시판</h3>
+</div>
 
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
@@ -30,27 +33,60 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <div>
-                {% if page_obj.has_previous %}
-                <a href="?page={{page_obj.previous_page_number}}">Previous</a>
-                {% endif %}
 
-                page {{page_obj.number}} of {{page_obj.paginator.num_pages}}
 
-                {% if page_obj.has_next %}
-                <a href="?page={{page_obj.next_page_number}}">Next</a>
-                {% endif %}
-            </div>
         </div>
 
+        <!-- paginator -->
+        <div>
+            page {{posts.number}} of {{posts.paginator.num_pages}}
+            <ul class="pagination float-right">
+                <!-- 이전 페이지 -->
+                {% if posts.has_previous %}
+                <li class="page-item">
+                    <a href="?page={{posts.previous_page_number}}" class="page-link">Previous</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link">Previous</a>
+                </li>
+                {% endif %}
 
-        <!-- 글쓰기 버튼 -->
-        <a href="{% url 'snsapp:postcreate' %}" class="btn btn-primary btn-icon-split">
-            <span class="icon text-white-50">
-                <i class="fas fa-flag"></i>
-            </span>
-            <span class="text">글쓰기</span>
-        </a>
+
+                <!-- 페이지 링크들 -->
+                {% for page in posts.paginator.page_range %}
+                {% if posts.number == page %}
+                <li class="page-item active">
+                    <a href="?page={{page}}" class="page-link">{{page}}</a>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a href="?page={{page}}" class="page-link">{{page}}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+
+                <!-- 다음 페이지 -->
+                {% if posts.has_next %}
+                <li class="page-item">
+                    <a href="?page={{posts.next_page_number}}" class="page-link">Next</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
     </div>
+</div>
+<!-- 글쓰기 버튼 -->
+<div>
+    <a href="{% url 'snsapp:postcreate' %}" class="btn btn-primary btn-icon-split float-right">
+        <span class="icon text-white-50">
+            <i class="fas fa-flag"></i>
+        </span>
+        <span class="text">글쓰기</span>
+    </a>
 </div>
 {% endblock %}

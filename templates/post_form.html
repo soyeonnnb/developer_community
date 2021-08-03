@@ -1,12 +1,27 @@
 {% extends 'base.html' %}
+{% block page_title %}
+자유게시판 글작성
+{% endblock page_title %}
 {% block content %}
-<h1>새글 작성(추후 css)</h1>
+<div class="card-body">
+    <h3>자유게시판</h3>
+</div>
 <form method="POST" action="" enctype="multipart/form-data">
     {% csrf_token %}
-    <table>
-        {{form.as_table}}
-    </table>
-    <input type="submit" value="새글" />
+    <div class="col-xl-13 col-md-13 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="mb-4">
+                    {{form.title}}
+                </div>
+                <div>
+                    <h4>{{form.body}}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="submit" value="새글" class="btn btn-primary float-right" />
 </form>
 
 {% endblock %}

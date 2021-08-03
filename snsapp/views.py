@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render, get_object_or_404
-from django.views.generic import ListView
+from django.core.paginator import Paginator
 from snsapp.forms import PostForm
 from .forms import CommentForm, PostForm, AnCommentForm, AnPostForm
 from .models import Post, AnPost
@@ -12,16 +12,12 @@ def home(request):
 
 
 # 자유게시판
-class BoardView(ListView):
-
-    """BoardView Definition"""
-
-    model = Post
-    paginate_by = 10
-    paginate_orphans = 5
-    ordering = "-date"
-    context_object_name = "posts"
-    template_name = "board.html"
+def board(request):
+    posts = Post.objects.filter().order_by("-date")
+    paginator = Paginator(posts, 10)
+    page_num = request.GET.get("page")
+    posts = paginator.get_page(page_num)
+    return render(request, "board.html", {"posts": posts})
 
 
 def postcreate(request):
@@ -31,7 +27,7 @@ def postcreate(request):
             finished_form = form.save(commit=False)
             finished_form.author = request.user
             finished_form.save()
-            return redirect("snsapp:home")
+            return redirect("snsapp:board")
     else:
         form = PostForm()
         return render(request, "post_form.html", {"form": form})
@@ -54,16 +50,14 @@ def new_comment(request, post_id):
 
 
 # 익명게시판
-class AnBoardView(ListView):
 
-    """BoardView Definition"""
 
-    model = AnPost
-    paginate_by = 10
-    paginate_orphans = 5
-    ordering = "-date"
-    context_object_name = "posts"
-    template_name = "board_an.html"
+def an_board(request):
+    posts = AnPost.objects.filter().order_by("-date")
+    paginator = Paginator(posts, 10)
+    page_num = request.GET.get("page")
+    posts = paginator.get_page(page_num)
+    return render(request, "board_an.html", {"posts": posts})
 
 
 def an_postcreate(request):
@@ -71,7 +65,7 @@ def an_postcreate(request):
         form = AnPostForm(request.POST, request.FILES)
         if form.is_valid:
             form.save()
-            return redirect("snsapp:home")
+            return redirect("snsapp:an_board")
     else:
         form = AnPostForm()
         return render(request, "post_form_an.html", {"form": form})
